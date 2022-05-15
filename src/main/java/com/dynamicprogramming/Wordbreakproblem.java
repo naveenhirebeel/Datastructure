@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Wordbreakproblem {
 
-	List<String> dictionary = Arrays.asList("i", "like", "javaa");
+	List<String> dictionary = Arrays.asList("i", "like", "java");
 	
 	public static void main(String[] args) {
 		String word = "ilikejava";
@@ -25,7 +25,7 @@ public class Wordbreakproblem {
 			}
 		} else {
 			j++;
-			if(j >= word.length()) {
+			if(j > word.length()) {
 				flag =  false;
 			} else {
 				flag =  wordBreak(word, i, j);
