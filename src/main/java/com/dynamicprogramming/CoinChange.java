@@ -7,7 +7,8 @@ public class CoinChange {
 	 */
 	
 	public static void main(String[] args) {
-		System.out.println(change(13,new int[]{1,2,5}));
+
+		System.out.println(change(5,new int[]{2,5}));
 	}
 	
 	/**
@@ -27,7 +28,7 @@ public class CoinChange {
 			for(int i = 1; i < combinations.length; i++){
 				if(i >= coin){
 					combinations[i] = combinations[i] + combinations[i - coin];
-					//printAmount(combinations);
+//					printAmount(combinations);
 				}
 			}
 			//System.out.println();

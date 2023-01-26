@@ -1,4 +1,4 @@
-package com.dynamicprogramming.LongestSumContiuguosSubArray;
+package com.dynamicprogramming;
 
 public class EggDroppingProblem {
 

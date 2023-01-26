@@ -1,6 +1,4 @@
-package com.dynamicprogramming.LongestSumContiuguosSubArray;
-
-import java.util.Arrays;
+package com.dynamicprogramming;
 
 public class EggSolver {
 	public static void main(String[] args) {
