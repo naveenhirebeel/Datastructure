@@ -15,7 +15,7 @@ public class WordBreak {
         }
 
         for(int i = 1; i<=str.length(); i++) {
-            if(disctionary.contains(str.substring(0, i))){
+            if(disctionary.contains(str.substring(0, i))) {
                 System.out.println(String.format("Found word : %s", str.substring(0, i)));
                 return wordBreak(str.substring(i));
             }

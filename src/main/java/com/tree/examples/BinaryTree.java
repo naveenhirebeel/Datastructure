@@ -1,7 +1,9 @@
-package com.tree;
+package com.tree.examples;
 // Recursive Java program for level order traversal of Binary Tree
 
-/* Class containing left and right child of current 
+import com.tree.Node;
+
+/* Class containing left and right child of current
 node and key value*/
 public class BinaryTree {
     // Root of the Binary Tree
@@ -9,14 +11,6 @@ public class BinaryTree {
 
     public BinaryTree() {
         root = null;
-    }
-
-    /* function to print level order traversal of tree*/
-    void printLevelOrder() {
-        int h = height(root);
-        int i;
-        for (i = 1; i <= h; i++)
-            printGivenLevel(root, i);
     }
 
     /* Compute the "height" of a tree -- the number of
@@ -37,12 +31,19 @@ public class BinaryTree {
         }
     }
 
+    /* function to print level order traversal of tree*/
+    void printLevelOrder() {
+        int h = height(root);
+        int i;
+        for (i = 1; i <= h; i++)
+            printGivenLevel(root, i);
+    }
     /* Print nodes at the given level */
     void printGivenLevel(Node root, int level) {
         if (root == null)
             return;
         if (level == 1)
-            System.out.print(root.data + " ");
+            System.out.print(root.val + " ");
         else if (level > 1) {
             printGivenLevel(root.left, level - 1);
             printGivenLevel(root.right, level - 1);

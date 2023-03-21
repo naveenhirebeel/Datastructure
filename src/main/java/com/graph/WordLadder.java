@@ -9,13 +9,7 @@ public class WordLadder {
 
     public static void main(String[] args) {
         String startWord = "der", targetWord = "dfs";
-        String[] wordList = {
-                "des",
-                "der",
-                "dfr",
-                "dgt",
-                "dfs"
-        };
+        String[] wordList = {"des", "der", "dfr", "dgt", "dfs"};
 
         WordLadder wl = new WordLadder();
         int sl = wl.wordLadderLength(startWord, targetWord, wordList);
@@ -29,6 +23,7 @@ public class WordLadder {
             this.depth = depth;
         }
     }
+
     public int wordLadderLength(String startWord, String targetWord, String[] wordList) {
         // Creating a queue ds of type {word,transitions to reach ‘word’}.
         Queue<Node> q = new LinkedList< >();
@@ -52,7 +47,8 @@ public class WordLadder {
 
             // we return the steps as soon as
             // the first occurence of targetWord is found.
-            if (word.equals(targetWord) == true) return depth;
+            if (word.equals(targetWord) == true)
+                return depth;
 
             // Now, replace each character of ‘word’ with char
             // from a-z then check if ‘word’ exists in wordList.
@@ -63,7 +59,7 @@ public class WordLadder {
                     String replacedWord = new String(replacedCharArray);
 
                     // check if it exists in the set and push it in the queue.
-                    if (st.contains(replacedWord) == true) {
+                    if (st.contains(replacedWord)) {
                         st.remove(replacedWord);
                         q.add(new Node(replacedWord, depth + 1));
                     }

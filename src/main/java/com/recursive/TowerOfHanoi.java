@@ -3,6 +3,8 @@ package com.recursive;
 public class TowerOfHanoi {
 
     public static void main(String[] args) {
+
+//        move(2, "a", "c", "b");
         move(3, "a", "c", "b");
     }
 

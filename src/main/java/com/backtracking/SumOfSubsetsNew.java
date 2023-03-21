@@ -42,6 +42,7 @@ public class SumOfSubsetsNew {
 			for (int i = 0; i <= k; i++) {
 				System.out.print("\t" + x[i]);
 			}
+			return;
 		} else if ((s + w[k] + w[k + 1]) <= sum) {
 			subset(k + 1, s + w[k], r - w[k]);
 		}
@@ -65,7 +66,7 @@ public class SumOfSubsetsNew {
 		}
 
 		//Exclude
-		if(k+1<6&&s+w[k+1] <= sum && s+r-w[k]>=sum) {
+		if(k+1<6 &&s+w[k+1] <= sum && s+r-w[k]>=sum) {
 			x[k] = 0;
 			subset(k+1, s, r-w[k]);
 		}

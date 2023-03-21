@@ -3,8 +3,8 @@ package com.stringarray;
 public class PallindromicPartitions {
 
     public static void main(String[] args) {
-//        String str = "gadag";
-        String str = "abba";
+        String str = "gadag";
+//        String str = "abba";
         int count = 0;
         if(str.length() % 2 == 0) {
             count+=  str.length();
@@ -19,7 +19,7 @@ public class PallindromicPartitions {
                 }
             }
         } else {
-            for(int i = 0; i < str.length(); i++){
+            for(int i = 0; i < str.length(); i++) {
                 for(int j = 0; i+j < str.length() && i-j >= 0; j++) {
                     if(str.charAt(i+j) == str.charAt(i-j)) {
                         count++;

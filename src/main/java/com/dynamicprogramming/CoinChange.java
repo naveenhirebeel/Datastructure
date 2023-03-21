@@ -8,7 +8,10 @@ public class CoinChange {
 	
 	public static void main(String[] args) {
 
-		System.out.println(change(5,new int[]{2,5}));
+		System.out.println(change(5,new int[]{1,2,5}));
+//		System.out.println(change(1,new int[]{1, 2}));
+//		System.out.println(change(2,new int[]{1, 2}));
+//		System.out.println(change(4,new int[]{1, 2}));
 	}
 	
 	/**
