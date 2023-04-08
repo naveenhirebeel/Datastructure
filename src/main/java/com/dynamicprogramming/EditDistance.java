@@ -1,6 +1,6 @@
 package com.dynamicprogramming;
 
-import java.util.*;
+import java.util.Arrays;
 class EditDistance {
 
     //Recursive approach

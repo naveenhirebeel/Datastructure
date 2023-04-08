@@ -1,8 +1,5 @@
 package com.dynamicprogramming;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class CuttingARodSample {
 
 	/*It is just pseudo code*/ 

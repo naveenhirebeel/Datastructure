@@ -1,9 +1,8 @@
 package com.tree.examples;
 
 import com.tree.Node;
-import com.tree.TreePrinter;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class SortedArrayToBST {
 

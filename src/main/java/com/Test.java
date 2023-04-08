@@ -1,13 +1,5 @@
 package com;
 
-import com.oops.MySingleton;
-import com.sun.istack.internal.NotNull;
-import com.sun.xml.internal.ws.util.StringUtils;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 public class Test {
     /*public static void main(String[] args) {
         String str = "APPLEE";

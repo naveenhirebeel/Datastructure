@@ -1,6 +1,5 @@
 package com.backtracking;
 
-import java.util.Scanner;
 //DID NOT UNDERSTANDDDDDDDDDDDDDDDDDDDDD YETTTTTTTTTTTTTTTTTTTTT
 public class SumOfSubsets {
 
