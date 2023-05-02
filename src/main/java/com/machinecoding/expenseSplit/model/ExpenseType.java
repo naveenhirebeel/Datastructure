@@ -1,5 +1,5 @@
 package com.machinecoding.expenseSplit.model;
 
 public enum ExpenseType {
-    EQUAL, EXACT, PERCENT;
+    EQUAL, EXACT, PERCENT, PARTIAL;
 }

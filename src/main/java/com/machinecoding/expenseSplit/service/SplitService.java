@@ -4,9 +4,7 @@ import com.machinecoding.expenseSplit.model.Command;
 import com.machinecoding.expenseSplit.model.ExpenseType;
 import com.machinecoding.expenseSplit.model.User;
 
-import javax.swing.text.html.Option;
 import java.util.*;
-import java.util.function.Function;
 
 public class SplitService {
     Scanner sc;
@@ -85,13 +83,13 @@ public class SplitService {
             ExpenseType  et = ExpenseType.valueOf(expenseType.toUpperCase());
             switch (et) {
                 case EQUAL:
-                    equalExpenseSplit(payee, paidAmount, userMap, owerIds);
+                    equalSplit(payee, paidAmount, userMap, owerIds);
                     break;
                 case EXACT:
-                    exactExpenseSplit(payee, paidAmount, userMap, owerIds);
+                    exactSplit(payee, paidAmount, userMap, owerIds);
                     break;
                 case PERCENT:
-                    percentExpenseSplit(payee, paidAmount, userMap, owerIds);
+                    percentSplit(payee, paidAmount, userMap, owerIds);
                     break;
                 default:
                     System.out.println("Not supported expense type");
@@ -102,126 +100,132 @@ public class SplitService {
         System.out.println("Executed expense");
     }
 
-    public void equalExpenseSplit(String payee, Double paidAmount, Map<String, User> userMap, List<String> owerIds) {
+    public void equalSplit(String payee, Double paidAmount, Map<String, User> userMap, List<String> owerIds) {
         User payeeUser = userMap.get(payee);
-        Double woedAmount = paidAmount / owerIds.size();
+        Double perHeadToContribute = paidAmount / owerIds.size();
 
         for(String owerId : owerIds) {
-            Optional<Double> existingOwedAmount = Optional.ofNullable(payeeUser.getOwedMap().get(owerId));
-            Double owedAmount = existingOwedAmount.map(v -> v + woedAmount).orElse(woedAmount);
+            Double existingOwedAmount =
+                    Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).get();
+            Double newOwedAmount = existingOwedAmount+ perHeadToContribute;
 
             if(!payee.equals(owerId)) {
+                User owerUser = userMap.get(owerId);
+                Double owerOwedToPayee =  perHeadToContribute;
+                Double owedUserExistingOwedAmount =
+                        Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).orElse(0d);
+                Double owerOwedNewAmount = owedUserExistingOwedAmount + owerOwedToPayee;
 
-                //Logic to check for reverse owedAmount -VVIMP
-                Double remainingOwedAmount;
-                User ower = userMap.get(owerId);
-                Optional<Double> payeeOwedAmountToOwerOptional = Optional.ofNullable(ower.getOwedMap().get(payee));
-                Double payeeOwedToOwer = payeeOwedAmountToOwerOptional.map(v -> v).orElse(0d);
-
-                updatePayeeAndOwedUserAmount(userMap, payee, owerId, owedAmount);
-
-                /*if(Double.compare(payeeOwedToOwer, owedAmount) > 0) {
-                    ower.getOwedMap().put(payee, payeeOwedToOwer - owedAmount);
+                Double payeeOwedToUser =
+                        Optional.ofNullable(owerUser.getOwedMap()).map(map -> map.get(payee)).orElse(0d);
+                if(Double.compare(payeeOwedToUser, owerOwedNewAmount) > 0) {
+                    owerUser.getOwedMap().put(payee, payeeOwedToUser - owerOwedNewAmount);
                     payeeUser.getOwedMap().put(owerId, 0d);
-                } else if(Double.compare(payeeOwedToOwer, owedAmount) < 0) {
-                    ower.getOwedMap().put(payee, 0d);
-                    payeeUser.getOwedMap().put(owerId, owedAmount - payeeOwedToOwer);
                 } else {
-                    ower.getOwedMap().put(payee, 0d);
-                    payeeUser.getOwedMap().put(owerId, owedAmount - payeeOwedToOwer);
-                }*/
+                    owerUser.getOwedMap().put(payee, 0d);
+                    payeeUser.getOwedMap().put(owerId, owerOwedNewAmount - payeeOwedToUser);
+                }
             }
         }
     }
 
-    public void exactExpenseSplit(String payee, Double paidAmount, Map<String, User> userMap, List<String> owerIds) {
-        User payeeUser = userMap.get(payee);
+    public void exactSplit(String payee, Double paidAmount, Map<String, User> userMap, List<String> owerIds) {
+        Double perHeadToContribute = paidAmount /owerIds.size();
         Scanner sc = getScanner();
-        List<Double> owedAmounts = new ArrayList<>();
+        List<Double> owedUsersPaidAmounts = new ArrayList<>();
         Double allOwerPaidAmount = 0d;
         for(String owerId: owerIds) {
             Double owerPaidAmount = sc.nextDouble();
-            owedAmounts.add(owerPaidAmount);
+            owedUsersPaidAmounts.add(owerPaidAmount);
             allOwerPaidAmount += owerPaidAmount;
         }
-
         if(!paidAmount.equals(allOwerPaidAmount)) {
             System.out.println("Paid amount does not match with contributed amount by contributors!");
             return;
         }
-
-
+        User payeeUser = userMap.get(payee);
         for(int i = 0; i < owerIds.size(); i++) {
             String owerId = owerIds.get(i);
             if(!payee.equals(owerId)) {
-                Double userExistingOwedAmount =
-                        Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).orElse(0d);
-                Double owedAmount = userExistingOwedAmount + owedAmounts.get(i);
-
-                updatePayeeAndOwedUserAmount(userMap, payee, owerId, owedAmount);
-
-                /*//Get payee owed amount to user.
                 User owerUser = userMap.get(owerId);
-                Double payeeOwedToUser =
-                        Optional.ofNullable(owerUser.getOwedMap()).map(map -> map.get(payee)).orElse(0d);
-                if(Double.compare(payeeOwedToUser, owedAmount) > 0) {
-                    owerUser.getOwedMap().put(payee, payeeOwedToUser - owedAmount);
-                    payeeUser.getOwedMap().put(owerId, 0d);
+                Double owedUserPaidAmount = owedUsersPaidAmounts.get(i);
+                if(perHeadToContribute < owedUserPaidAmount ) {
+                    //Case : Contributor paid more than his actual contribution share amount
+                    // Here Payee should payee to contributor as he paid more
+                    // than his contribution. Payee in a way receive money from other contributor.
+                    Double payeeOwedToOwer = owedUserPaidAmount - perHeadToContribute;
+                    Double payeeUserExistingOwedAmount =
+                            Optional.ofNullable(owerUser.getOwedMap()).map(map -> map.get(payee)).orElse(0d);
+                    Double payeeOwedNewAmount = payeeUserExistingOwedAmount + payeeOwedToOwer;
+                    owerUser.getOwedMap().put(payee, payeeOwedNewAmount);
                 } else {
-                    owerUser.getOwedMap().put(payee, 0d);
-                    payeeUser.getOwedMap().put(owerId, owedAmount - payeeOwedToUser);
-                }*/
+                    //Case : Contributor paid no or less than share amount(Payment/no of members)
+                    // Here contributor should pay to Payee, as his contribution is less than shared amount.
+                    Double owerOwedToPayee =  perHeadToContribute - owedUserPaidAmount;
+                    Double owedUserExistingOwedAmount =
+                            Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).orElse(0d);
+                    Double owerOwedNewAmount = owedUserExistingOwedAmount + owerOwedToPayee;
+
+                    Double payeeOwedToUser =
+                            Optional.ofNullable(owerUser.getOwedMap()).map(map -> map.get(payee)).orElse(0d);
+                    if(Double.compare(payeeOwedToUser, owerOwedNewAmount) > 0) {
+                        owerUser.getOwedMap().put(payee, payeeOwedToUser - owerOwedNewAmount);
+                        payeeUser.getOwedMap().remove(owerId, 0d);
+                    } else {
+                        owerUser.getOwedMap().remove(payee, 0d);
+                        payeeUser.getOwedMap().put(owerId, owerOwedNewAmount - payeeOwedToUser);
+                    }
+                }
             }
         }
     }
 
-    private void updatePayeeAndOwedUserAmount(Map<String, User> userMap, String payee, String owerId, Double owedAmount) {
-        User owerUser = userMap.get(owerId);
-        User payeeUser = userMap.get(payee);
-
-        //Get payee owed amount to user.
-        Double payeeOwedToUser =
-                Optional.ofNullable(owerUser.getOwedMap()).map(map -> map.get(payee)).orElse(0d);
-        if(Double.compare(payeeOwedToUser, owedAmount) > 0) {
-            owerUser.getOwedMap().put(payee, payeeOwedToUser - owedAmount);
-            payeeUser.getOwedMap().put(owerId, 0d);
-        } else {
-            owerUser.getOwedMap().put(payee, 0d);
-            payeeUser.getOwedMap().put(owerId, owedAmount - payeeOwedToUser);
-        }
-    }
-
-    public void percentExpenseSplit(String payee, Double paidAmount, Map<String, User> userMap, List<String> owerIds) {
+    public void percentSplit(String payee, Double paidAmount, Map<String, User> userMap, List<String> owerIds) {
+        Double perHeadToContribute = paidAmount / owerIds.size();
         Scanner sc = getScanner();
-        List<Integer> percentages = new ArrayList<>();
+        List<Double> owedUsersPaidAmounts = new ArrayList<>();
+        Integer owerPercentageContributions = 0;
         for(int i = 0;  i < owerIds.size(); i++) {
-            percentages.add(sc.nextInt());
+            int percentage = sc.nextInt();
+            owedUsersPaidAmounts.add(paidAmount * (percentage/100.0));
+            owerPercentageContributions+=percentage;
         }
-
+        if(!owerPercentageContributions.equals(100)) {
+            System.out.println("Paid amount does not match with contributed percentage by contributors!");
+            return;
+        }
         User payeeUser = userMap.get(payee);
         for(int i = 0; i < owerIds.size(); i++) {
             String owerId = owerIds.get(i);
-            if(!owerId.equals(payee)) {
-                Double userExistingOwedAmount =
-                        Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).orElse(0d);
-                Double owedAmount = userExistingOwedAmount + paidAmount * (percentages.get(i)/100.0);
-
-                updatePayeeAndOwedUserAmount(userMap, payee, owerId, owedAmount);
-
-                /*//Get Payee owed to ower
+            if(!payee.equals(owerId)) {
                 User owerUser = userMap.get(owerId);
-                Double payeeOwedToOwer =
-                        Optional.ofNullable(userMap.get(owerId).getOwedMap()).map(map -> map.get(payee)).orElse(0d);
+                Double owedUserPaidAmount = owedUsersPaidAmounts.get(i);
+                if(perHeadToContribute < owedUserPaidAmount ) {// Here Payee should payee to contributor as he paid more
+                    // than his contribution. Payee in a way receive money from other contributor.
+                    Double payeeOwedToOwer = owedUserPaidAmount - perHeadToContribute;
+                    Double payeeUserExistingOwedAmount =
+                            Optional.ofNullable(owerUser.getOwedMap()).map(map -> map.get(payee)).orElse(0d);
+                    Double payeeOwedNewAmount = payeeUserExistingOwedAmount + payeeOwedToOwer;
+                    owerUser.getOwedMap().put(payee, payeeOwedNewAmount);
+                } else { // Here contributor should pay to Payee, as his contribution is less than shared amount.
+                    Double owerOwedToPayee =  perHeadToContribute - owedUserPaidAmount;
+                    Double owedUserExistingOwedAmount =
+                            Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).orElse(0d);
+                    Double owerOwedNewAmount = owedUserExistingOwedAmount + owerOwedToPayee;
 
-                if(Double.compare(payeeOwedToOwer, owedAmount) > 0) {
-                    owerUser.getOwedMap().put(payee, payeeOwedToOwer - owedAmount);
-                    payeeUser.getOwedMap().remove(owerId);
-                } else {
-                    owerUser.getOwedMap().remove(payee);
-                    payeeUser.getOwedMap().put(owerId, owedAmount - payeeOwedToOwer);
-                }*/
+                    Double payeeOwedToUser =
+                            Optional.ofNullable(owerUser.getOwedMap()).map(map -> map.get(payee)).orElse(0d);
+                    if(Double.compare(payeeOwedToUser, owerOwedNewAmount) > 0) {
+                        owerUser.getOwedMap().put(payee, payeeOwedToUser - owerOwedNewAmount);
+                        payeeUser.getOwedMap().remove(owerId, 0d);
+                    } else {
+                        owerUser.getOwedMap().remove(payee, 0d);
+                        payeeUser.getOwedMap().put(owerId, owerOwedNewAmount - payeeOwedToUser);
+                    }
+                }
             }
         }
 
     }
+
 }
