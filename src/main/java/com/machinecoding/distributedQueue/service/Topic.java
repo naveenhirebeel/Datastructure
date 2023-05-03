@@ -4,21 +4,32 @@ import com.machinecoding.distributedQueue.model.Consumer;
 import com.machinecoding.distributedQueue.model.Producer;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-public class Topic {
+public class Topic<T> {
 
     String name;
 
-    Queue<String> queue = new LinkedList<>();
+    Queue<T> queue = new LinkedList<T>();
 
     List<Consumer> consumers = new ArrayList<>();
 
-    public void publish(String message) {
+    public void publish(T message) {
         queue.add(message);
-        forwardToSubscribers(message);
+
+        CompletableFuture.runAsync(() -> forwardToSubscribers(queue))
+                .thenRun(() -> {
+                    System.out.println("submitted to subscribed consumers");
+                })
+                .exceptionally(ex -> {
+                    System.out.println("Error");
+                    return null;
+                }).join();
     }
 
-    public void forwardToSubscribers(String message) {
+    public void forwardToSubscribers(Queue queue) {
+        Object message = queue.poll();
         for(Consumer consumer : consumers) {
             consumer.onMessage(message);
         }
@@ -32,11 +43,11 @@ public class Topic {
         this.name = name;
     }
 
-    public Queue<String> getQueue() {
+    public Queue<T> getQueue() {
         return queue;
     }
 
-    public void setQueue(Queue<String> queue) {
+    public void setQueue(Queue<T> queue) {
         this.queue = queue;
     }
 

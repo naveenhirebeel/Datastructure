@@ -106,7 +106,7 @@ public class SplitService {
 
         for(String owerId : owerIds) {
             Double existingOwedAmount =
-                    Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).get();
+                    Optional.ofNullable(payeeUser.getOwedMap()).map(map -> map.get(owerId)).orElse(0d);
             Double newOwedAmount = existingOwedAmount+ perHeadToContribute;
 
             if(!payee.equals(owerId)) {

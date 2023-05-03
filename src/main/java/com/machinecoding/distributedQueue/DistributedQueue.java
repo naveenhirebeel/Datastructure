@@ -20,11 +20,11 @@ public class DistributedQueue {
     private static final String CONSUMER_4 = "Consumer 4";
     private static final String CONSUMER_5 = "Consumer 5";
 
-    private List<Topic> topics;
+    private List<Topic<String>> topics;
     private Map<String, Topic> topicMap;
     private Map<String, Producer> producerMap;
 
-    public DistributedQueue(List<Topic> topics, List<Producer> producers) {
+    public DistributedQueue(List<Topic<String>> topics, List<Producer> producers) {
         this.topics = topics;
         topicMap = new HashMap<>();
         for(Topic topic : topics) {
