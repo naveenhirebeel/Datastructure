@@ -14,7 +14,7 @@ public class Sudoku4x4 {
 		System.out.println("Result - >");
 		sudoku.printGrid(grid);
 		System.out.println("\nResult - >");
-		if(sudoku.solveDudoku(grid)) {
+		if(sudoku.solveSudoku(grid)) {
 			sudoku.printGrid(grid);
 		} else {
 			System.out.println("Not possible");
@@ -33,7 +33,7 @@ public class Sudoku4x4 {
 		}
 	}
 	
-	boolean solveDudoku(int[][] grid) {
+	boolean solveSudoku(int[][] grid) {
 		MissingNumber mn = findMissingNumber(grid);
 		
 		if(null == mn) {
@@ -47,7 +47,7 @@ public class Sudoku4x4 {
 			if(isSafe(grid, row, col, i)) {
 				grid[row][col] = i;
 				
-				if(solveDudoku(grid)) {
+				if(solveSudoku(grid)) {
 					return true;
 				}
 				grid[row][col] = 0;	

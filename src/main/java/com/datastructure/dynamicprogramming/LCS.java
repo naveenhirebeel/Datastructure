@@ -12,7 +12,7 @@ public class LCS {
         int m = s1.length();
         int n = s2.length();
         System.out.println(lcs(X, Y, m, n));
-        System.out.println(lcsFinal(X, Y, m, n));
+//        System.out.println(lcsFinal(X, Y, m, n));
 
     }
 

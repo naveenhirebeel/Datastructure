@@ -51,4 +51,13 @@ public class TreeUtil {
                 queue.add(node.right);
         }
     }
+
+    public static void printInOrder(Node node) {
+        if(node == null)
+            return;
+
+        printInOrder(node.left);
+        System.out.print(node.val+ " ");
+        printInOrder(node.right);
+    }
 }

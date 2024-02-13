@@ -149,7 +149,7 @@ public class SplitService {
             if(!payee.equals(owerId)) {
                 User owerUser = userMap.get(owerId);
                 Double owedUserPaidAmount = owedUsersPaidAmounts.get(i);
-                if(perHeadToContribute < owedUserPaidAmount ) {
+                if(owedUserPaidAmount > perHeadToContribute) {
                     //Case : Contributor paid more than his actual contribution share amount
                     // Here Payee should payee to contributor as he paid more
                     // than his contribution. Payee in a way receive money from other contributor.
@@ -200,7 +200,7 @@ public class SplitService {
             if(!payee.equals(owerId)) {
                 User owerUser = userMap.get(owerId);
                 Double owedUserPaidAmount = owedUsersPaidAmounts.get(i);
-                if(perHeadToContribute < owedUserPaidAmount ) {// Here Payee should payee to contributor as he paid more
+                if(owedUserPaidAmount > perHeadToContribute ) {// Here Payee should payee to contributor as he paid more
                     // than his contribution. Payee in a way receive money from other contributor.
                     Double payeeOwedToOwer = owedUserPaidAmount - perHeadToContribute;
                     Double payeeUserExistingOwedAmount =

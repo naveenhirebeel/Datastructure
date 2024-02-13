@@ -1,6 +1,15 @@
 package com.datastructure;
 
 public class Test {
+
+    public static void main(String[] args) {
+        int i = 'b'-'a';
+        System.out.println(i);
+        System.out.println(Character.isAlphabetic('a'));
+        System.out.println(Character.isDigit('a'));
+        System.out.println(Character.isDigit('1'));
+    }
+
     /*public static void main(String[] args) {
         String str = "APPLEE";
         switch (str) {
@@ -45,9 +54,9 @@ public class Test {
 
     }*/
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
 
-        /*String str = "abc";
+        String str = "abc";
         StringBuffer sb = new StringBuffer(str);
         System.out.println(sb.reverse());*/
 
@@ -67,6 +76,6 @@ public class Test {
             flag = !flag;
             l++;
             r--;
-        }*/
-    }
+        }
+    }*/
 }
